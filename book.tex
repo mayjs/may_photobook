@@ -1,0 +1,59 @@
+\documentclass[
+    layoutmode=spread, % Two pages on one
+    % page size for Saal Digital 19x19cm photobook
+    blockwidth=188mm, blockheight=188mm,
+    bleed=3mm,
+]{photobook}
+
+\usepackage{listofitems} % For handling lists of images
+\usepackage[dvipsnames]{xcolor} % For setting text colors
+\usepackage{customlayouts} % Custom page layouts, see customlayouts.sty
+
+% Prevent accidental indentations and section numbers
+\setlength{\parindent}{0pt}
+\setcounter{secnumdepth}{0}
+% Set clearance around images
+\setlength{\ImageClearance}{10mm}
+
+% Include the generated imagesets
+\input{imagesets.tex}
+
+\begin{document}
+
+\begin{page}
+    \begin{leftside}
+        \TwoLandscapes{\ISTwoLandscapes}
+    \end{leftside}
+    \begin{rightside}
+        % Most layouts support adding subtitles as optional arguments. They are separated with ;.
+        \TwoPortraits[Subtitle 1;Subtitle 2]{\ISTwoPortraits}
+    \end{rightside}
+\end{page}
+
+\begin{page}
+    \begin{leftside}
+        \ImageAndTitle[Subtitle]{Title}{\ISJustPortrait}
+    \end{leftside}
+    % If you want to fill a page to the edge, make sure to use the bleed-including environments! E.g. righside*, leftside*, pagebleedcell
+    \begin{rightside*}
+        \imagecell[fill]{}{\ISJustPortrait}
+    \end{rightside*}
+    \begin{rightside*}
+        % Titles and other elements can be freely positioned by using the cell environment
+        % If \RelativePositioning, the offset will be relative to the paper origin, which will be the left side in our case
+        \RelativePositioning
+        \begin{cell}{2.5cm,2.5cm}{10cm}{3cm}
+            \Huge\textcolor{white}{Floating Title}
+        \end{cell}
+    \end{rightside*}
+\end{page}
+
+\begin{page}
+    \CollageLRRTitle[Subtitle Left;Subtitle Right 1;Subtitle Right 2]{Title}{\ISCollageLrr}
+\end{page}
+
+\begin{page}
+    \ThreeColumns[Subtitle 1;Subtitle 2;Subtitle 3]{\ISThreePortraits}
+\end{page}
+
+\end{document}

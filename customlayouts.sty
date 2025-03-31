@@ -1,0 +1,131 @@
+\newlength{\CollageWidth}
+\newlength{\CollageHeight}
+\newlength{\ImageClearance} % This one should be set by the user!
+
+% Command to generate a nice caption below an imagecell
+% For some reason we need a -35pt horizontal offset for the caption to be correctly centered
+\newcommand\maycaption[1]{\vspace{2mm}\captioncell[align=center,
+under]{\hspace{-35pt}\Large#1}}%
+
+\def\RelativePositioning{\TPoptions{absolute=false}}% Make inner cells relative to the current parent cell
+
+% ------ Basic single-page layouts (meant to be used on left or right side) -------
+% Two landscapes on top of each other
+\newcommand\TwoLandscapes[2][;]{%
+    \setsepchar{;}%
+    \readlist\subtitlesl{#1}% The first argument is the subtitle list
+    \setsepchar{ }%
+    \readlist\argl{#2}% The second argument is the image list
+    \RelativePositioning%
+    \pgfmathparse{\cellheight / 2}%
+    \setlength{\CollageHeight}{\pgfmathresult pt}%
+    \begin{cell}{0pt, 0pt}{\cellwidth}{\CollageHeight + (\ImageClearance / 2)}%
+        \imagecell[clearance=10mm, left]{\maycaption{\subtitlesl[1]}}{\argl[1]}%
+    \end{cell}%
+    \begin{cell}{0pt, {\CollageHeight + (\ImageClearance / 2)}}{\cellwidth}{\CollageHeight - (\ImageClearance / 2)}%
+        \imagecell[clearance=(\ImageClearance) (\ImageClearance) (\ImageClearance) 0mm, right]{\maycaption{\subtitlesl[2]}}{\argl[2]}%
+    \end{cell}%
+}%
+
+% Two portraits next to each other
+\newcommand\TwoPortraits[2][;]{%
+    \setsepchar{;}%
+    \readlist\subtitlesl{#1}%
+    \setsepchar{ }%
+    \readlist\argl{#2}% The second argument is the image list
+    \RelativePositioning%
+    \pgfmathparse{\cellwidth / 2}%
+    \setlength{\CollageWidth}{\pgfmathresult pt}%
+    \begin{cell}{0pt, 0pt}{\CollageWidth}{\cellheight}%
+        \imagecell[clearance=(\ImageClearance) (\ImageClearance) {\ImageClearance / 2} (\ImageClearance), top]{\maycaption{\subtitlesl[1]}}{\argl[1]}%
+    \end{cell}%
+    \begin{cell}{\CollageWidth, 0pt}{\CollageWidth}{\cellheight}%
+        \imagecell[clearance={\ImageClearance / 2} (\ImageClearance) (\ImageClearance) (\ImageClearance),
+        bottom]{\maycaption{\subtitlesl[2]}}{\argl[2]}%
+    \end{cell}%
+}%
+
+% One big image with a big title up top
+\newcommand\ImageAndTitle[3][]{%
+    \begin{pagecell}%
+        \imagecell[clearance=(\ImageClearance) (\ImageClearance) (\ImageClearance) {\ImageClearance * 2}]{\maycaption{#1}}{#3}% Image and subtitle
+    \end{pagecell}%
+    \begin{pagecell}%
+        \begin{center}%
+            \vspace*{\ImageClearance}%
+            \Huge #2
+        \end{center}%
+    \end{pagecell}%
+}%
+
+% ------ Collages -------
+% Image and title on the left side; Two landscapes on the right side
+\newcommand\CollageLRRTitle[3][;;]{%
+    \setsepchar{;}%
+    \readlist\subtitles{#1}% The first argument contains the subtitles
+    \setsepchar{ }%
+    \readlist\arg{#3}% The third argument contains the image paths
+    % Split the caption lists
+    \edef\leftcaps{\subtitles[1]}%
+    \edef\rightcaps{\subtitles[2];\subtitles[3]}%
+    \begin{leftside}%
+        \ImageAndTitle[\leftcaps]{#2}{\arg[1]}% The second argument contains the title
+    \end{leftside}%
+    \begin{rightside}%
+        \TwoLandscapes[\rightcaps]{\arg[2] \arg[3]}%
+    \end{rightside}%
+}%
+
+% Three evenly distributed columns with portraits
+\newcommand\ThreeColumns[2][;;]{%
+    \setsepchar{;}%
+    \readlist\subtitles{#1}%
+    \setsepchar{ }%
+    \readlist\arg{#2}%
+    \begin{papercell}%
+        \RelativePositioning%
+        \pgfmathparse{((\cellwidth - (4 * \ImageClearance))/ 3)}%
+        \setlength{\CollageWidth}{\pgfmathresult pt}%
+        \begin{cell}{(\ImageClearance), 0mm}{\CollageWidth}{\cellheight}%
+            \imagecell[fill, clearance=0mm (\ImageClearance) 0mm (\ImageClearance)]{\maycaption{\subtitles[1]}}{\arg[1]}%
+        \end{cell}%
+        \begin{cell}{{(\ImageClearance * 2) + \CollageWidth}, 0mm}{\CollageWidth}{\cellheight}%
+            \imagecell[fill, clearance=0mm (\ImageClearance) 0mm (\ImageClearance)]{\maycaption{\subtitles[2]}}{\arg[2]}%
+        \end{cell}
+        \begin{cell}{{(\ImageClearance * 3) + (\CollageWidth * 2)}, 0mm}{\CollageWidth}{\cellheight}%
+            \imagecell[fill, clearance=0mm (\ImageClearance) 0mm (\ImageClearance)]{\maycaption{\subtitles[3]}}{\arg[3]}%
+        \end{cell}%
+    \end{papercell}%
+}
+
+% ------ Big collages -------
+\newcommand\CollageCell[3] {%
+    \begin{cell}{\CollageWidth*#1, \CollageHeight*#2}{\CollageWidth}{\CollageHeight}%
+        \imagecell[fill]{}{#3}%
+    \end{cell}%
+}%
+% Collage with 4 columns and 3 rows, no whitespace. Takes a space
+% separated list of image paths as its only argument.
+\newcommand\DoubleSideCollageXII[1]{%
+    \setsepchar{ }%
+    \readlist\arg{#1}%
+    \begin{paperbleedcell}%
+        \RelativePositioning%
+        \pgfmathparse{(\cellwidth / 4)}%
+        \setlength{\CollageWidth}{\pgfmathresult pt}%
+        \pgfmathparse{(\cellheight / 3)}%
+        \setlength{\CollageHeight}{\pgfmathresult pt}%
+        \CollageCell{0}{0}{\arg[1]}%
+        \CollageCell{1}{0}{\arg[2]}%
+        \CollageCell{2}{0}{\arg[3]}%
+        \CollageCell{3}{0}{\arg[4]}%
+        \CollageCell{0}{1}{\arg[5]}%
+        \CollageCell{1}{1}{\arg[6]}%
+        \CollageCell{2}{1}{\arg[7]}%
+        \CollageCell{3}{1}{\arg[8]}%
+        \CollageCell{0}{2}{\arg[9]}%
+        \CollageCell{1}{2}{\arg[10]}%
+        \CollageCell{2}{2}{\arg[11]}%
+        \CollageCell{3}{2}{\arg[12]}%
+    \end{paperbleedcell}%
+}%

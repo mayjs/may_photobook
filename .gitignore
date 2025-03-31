@@ -1,0 +1,11 @@
+*.aux
+*.fdb_latexmk
+*.fls
+*.image-list
+*.log
+*.out
+*.pdf
+
+result
+images_preview
+imagesets.tex
