@@ -7,7 +7,13 @@ It is built to work with square 19x19cm photobooks that need one double page on 
 
 It is recommended to use this repository with [Nix](https://nixos.org/), but you can also use it without Nix.
 
-### With Nix
+### With Nix (Flakes)
+
+Initialize your Flake-based project using `nix flake init --template github:mayjs/may_photobook`.
+You will have to run `nix fmt` once to make the scripts in the `utils` directory executable.
+Use `nix develop` to enter a development shell with all required tools.
+
+`nix build` can be used to build the full resolution PDF.
 
 ### Without Nix
 
